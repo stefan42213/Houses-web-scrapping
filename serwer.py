@@ -1,4 +1,4 @@
-from geting_data import *
+from collecting_data_library import *
 from functools import lru_cache
 
 # Function to process links and create a map
