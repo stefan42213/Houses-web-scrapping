@@ -7,7 +7,7 @@ def process_links(x, links_we_have, city):
     prices = []
     rents = []
     sizes = []
-    types = []  # Avoid using type as a variable name, as it's a reserved keyword
+    types = []
     rooms = []
     descriptions = []
     links = []
