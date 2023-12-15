@@ -1,50 +1,72 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QVBoxLayout, QPushButton, QHBoxLayout, QComboBox
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QVBoxLayout, QPushButton, QComboBox, QHBoxLayout
 import csv
 
 class DataCollectorApp(QWidget):
     def __init__(self):
         super().__init__()
 
-        self.labels = ["Rooms", "Area", "Floor", "Location", "Link"]
-        self.entry_widgets = {}
-
         self.init_ui()
 
     def init_ui(self):
         self.setWindowTitle('Data Collector')
-        self.setGeometry(100, 100, 400, 200)
+        self.setGeometry(100, 100, 400, 300)
 
         self.create_widgets()
 
     def create_widgets(self):
         layout = QVBoxLayout()
 
-        for label in self.labels:
+        labels = ["Rooms", "Floor", "Location"]
+        self.entry_widgets = {}
+
+        for label in labels:
             entry_label = QLabel(label)
+            entry_label.setStyleSheet("font-size: 16pt; font-family: Cikkiri;")
             entry_widget = QLineEdit()
-            entry_layout = QHBoxLayout()
-            entry_layout.addWidget(entry_label)
-            entry_layout.addWidget(entry_widget)
-            layout.addLayout(entry_layout)
+            layout.addWidget(entry_label)
+            layout.addWidget(entry_widget)
             self.entry_widgets[label] = entry_widget
 
-            # Add min-max labels and entry widgets for Area
-            if label == "Area":
-                min_label = QLabel("Min Area:")
-                max_label = QLabel("Max Area:")
-                min_entry = QLineEdit()
-                max_entry = QLineEdit()
+        # Add min-max labels and entry widgets for Price, and Min-Max Size
+        min_label = QLabel("Min Price:")
+        min_label.setStyleSheet("font-size: 16pt; font-family: Cikkiri;")
+        max_label = QLabel("Max Price:")
+        max_label.setStyleSheet("font-size: 16pt; font-family: Cikkiri;")
+        min_size_label = QLabel("Min Size:")
+        min_size_label.setStyleSheet("font-size: 16pt; font-family: Cikkiri;")
+        max_size_label = QLabel("Max Size:")
+        max_size_label.setStyleSheet("font-size: 16pt; font-family: Cikkiri;")
+        min_entry = QLineEdit()
+        max_entry = QLineEdit()
+        min_size_entry = QLineEdit()
+        max_size_entry = QLineEdit()
 
-                min_max_layout = QHBoxLayout()
-                min_max_layout.addWidget(min_label)
-                min_max_layout.addWidget(min_entry)
-                min_max_layout.addWidget(max_label)
-                min_max_layout.addWidget(max_entry)
+        min_max_layout = QHBoxLayout()
+        min_max_layout.addWidget(min_label)
+        min_max_layout.addWidget(min_entry)
+        min_max_layout.addWidget(max_label)
+        min_max_layout.addWidget(max_entry)
 
-                layout.addLayout(min_max_layout)
+        size_layout = QHBoxLayout()
+        size_layout.addWidget(min_size_label)
+        size_layout.addWidget(min_size_entry)
+        size_layout.addWidget(max_size_label)
+        size_layout.addWidget(max_size_entry)
+
+        layout.addLayout(min_max_layout)
+        layout.addLayout(size_layout)
+
+        #filter_label = QLabel("Filter by:")
+        #filter_label.setStyleSheet("font-size: 16pt; font-family: Cikkiri;")
+        #self.filter_combobox = QComboBox()
+        #self.filter_combobox.addItems(["", "Transaction Type", "Location"])  # Add more filter options if needed
+        #layout.addWidget(filter_label)
+        #layout.addWidget(self.filter_combobox)
+
 
         read_button = QPushButton("Read from CSV")
+        read_button.setStyleSheet("font-size: 16pt; font-family: Cikkiri;")
         read_button.clicked.connect(self.read_from_csv)
 
         layout.addWidget(read_button)
@@ -52,23 +74,11 @@ class DataCollectorApp(QWidget):
         self.setLayout(layout)
 
     def read_from_csv(self):
-        with open("data.csv", mode="r", encoding="utf-8") as file:
-            reader = csv.reader(file)
-            for row in reader:
-                # Access the values based on the labels
-                rooms = row[self.labels.index("Rooms")]
-                area = row[self.labels.index("Area")]
-
-                # You can use these values as needed
-                print(f"Rooms: {rooms}, Area: {area}")
-
-    def clear_entries(self):
-        for label in self.entry_widgets:
-            self.entry_widgets[label].clear()
-
+        # Implement your logic to read and process data from the CSV file
+        pass
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    window = DataCollectorApp()
-    window.show()
+    ex = DataCollectorApp()
+    ex.show()
     sys.exit(app.exec_())
