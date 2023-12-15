@@ -1,6 +1,37 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QVBoxLayout, QPushButton, QHBoxLayout
 import pandas as pd
+import numpy as np
+
+def get_city_names():
+    data = pd.read_csv('pl.csv')
+    towns = data['city'].to_numpy()
+    return towns
+def city_recognition(towns, data):
+    best_score = 0
+    closest_elem = ''
+    data = data.lower()
+
+    for elem in towns:
+        current_score = 0
+        elem = elem.lower()
+
+        for i, (char_elem, char_data) in enumerate(zip(elem, data)):
+            if char_elem == char_data:
+                current_score += 1
+            else:
+                try:
+                    if elem[i - 1] == data[i] or elem[i] == data[i - 1] or elem[i] == data[i + 1] or elem[i + 1] == \
+                            data[i]:
+                        current_score += 0.5
+                except IndexError:
+                    pass
+
+        if current_score > best_score:
+            best_score = current_score
+            closest_elem = elem
+
+    return closest_elem
 
 def filltering_data(collected_data):
     for key, value in list(collected_data.items()):
@@ -10,8 +41,28 @@ def filltering_data(collected_data):
 
 
 def collect_matching_annoucments(collected_data):
-    if "Location" in  list(collected_data.keys):
+    if "Location" in collected_data:
+        location_value = city_recognition(get_city_names(), collected_data["Location"])
         data = pd.read_csv("nieruchomosci.csv")
+
+        # Assuming your CSV has a column named "City"
+        matching_announcements = data[data["City"] == location_value]
+
+    else:
+        matching_announcements = pd.read_csv("nieruchomosci.csv")
+
+    if "Max Price" in collected_data and "Min Price" in collected_data:
+        maxp = float(collected_data["Max Price"])
+        minp = float(collected_data["Min Price"])
+
+        # Filter rows based on price range
+        matching_announcements = matching_announcements[(matching_announcements["Price"] >= minp) & (matching_announcements["Price"] <= maxp)]
+
+    return matching_announcements
+
+
+
+
 
 
 
@@ -89,7 +140,7 @@ class DataCollectorApp(QWidget):
         collected_data["Min Size"] = self.min_size_entry.text()
         collected_data["Max Size"] = self.max_size_entry.text()
 
-        print(filltering_data(collected_data))
+        print(collect_matching_annoucments(filltering_data(collected_data)))
 
 
 
