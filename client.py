@@ -57,6 +57,16 @@ def collect_matching_annoucments(collected_data):
 
         # Filter rows based on price range
         matching_announcements = matching_announcements[(matching_announcements["Price"] >= minp) & (matching_announcements["Price"] <= maxp)]
+    elif("Max Price" in collected_data):
+        maxp = float(collected_data["Max Price"])
+        matching_announcements = matching_announcements[(matching_announcements["Price"] <= maxp)]
+
+    elif("Min Price" in collected_data):
+        minp = float(collected_data["Min Price"])
+        matching_announcements = matching_announcements[(matching_announcements["Price"] >= minp)]
+
+
+
 
     return matching_announcements
 

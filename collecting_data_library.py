@@ -198,17 +198,14 @@ def getting_links_from_database():
 # Define an asynchronous function to check the status of a link
 async def check_link(session, link, index):
     try:
-        # Use aiohttp to asynchronously get the response from the link
         async with session.get(link) as response:
-            # Check if the response has an HTTP error status
-            response.raise_for_status()
-        # If no error occurred, the link is active, return None
-        return None
-    except aiohttp.ClientError as e:
-        # If an error occurred, return the index of the inactive link
-        return index
+            # Check if the link is active based on the response status
+            if response.status != 200:
+                return index  # Inactive link, return its index
+    except aiohttp.ClientError:
+        return index  # An exception occurred, consider it an inactive link
+    return None  # Active link
 
-# Define an asynchronous function to check multiple links concurrently
 async def deleting_data_async():
     # Read links from a CSV file using pandas
     links = pd.read_csv('nieruchomosci.csv')['Link']
