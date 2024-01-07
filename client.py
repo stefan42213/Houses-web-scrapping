@@ -56,7 +56,9 @@ def collect_matching_annoucments(collected_data):
         minp = float(collected_data["Min Price"])
 
         # Filter rows based on price range
-        matching_announcements = matching_announcements[(matching_announcements["Price"] >= minp) & (matching_announcements["Price"] <= maxp)]
+        matching_announcements = matching_announcements[(matching_announcements["Price"] >= minp)]
+        matching_announcements = matching_announcements[(matching_announcements["Price"] <= maxp)]
+
     elif("Max Price" in collected_data):
         maxp = float(collected_data["Max Price"])
         matching_announcements = matching_announcements[(matching_announcements["Price"] <= maxp)]
@@ -66,7 +68,21 @@ def collect_matching_annoucments(collected_data):
         matching_announcements = matching_announcements[(matching_announcements["Price"] >= minp)]
 
 
+    if "Max Size" in collected_data and "Min Size" in collected_data:
+        maxs = float(collected_data["Max Size"])
+        mins = float(collected_data["Min Size"])
 
+        # Filter rows based on price range
+        matching_announcements = matching_announcements[(matching_announcements["Size"] >= mins)]
+        matching_announcements = matching_announcements[(matching_announcements["Size"] <= maxs)]
+
+    elif("Max Price" in collected_data):
+        maxs = float(collected_data["Max Size"])
+        matching_announcements = matching_announcements[(matching_announcements["Size"] <= maxs)]
+
+    elif("Min Price" in collected_data):
+        mins = float(collected_data["Min Size"])
+        matching_announcements = matching_announcements[(matching_announcements["Size"] >= mins)]
 
     return matching_announcements
 
@@ -150,6 +166,9 @@ class DataCollectorApp(QWidget):
         collected_data["Min Size"] = self.min_size_entry.text()
         collected_data["Max Size"] = self.max_size_entry.text()
 
+        all_matching = collect_matching_annoucments(filltering_data(collected_data))
+
+        print(f'We found {len(all_matching)} matching annoucments:')
         print(collect_matching_annoucments(filltering_data(collected_data)))
 
 

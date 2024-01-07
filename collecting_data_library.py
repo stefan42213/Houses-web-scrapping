@@ -231,16 +231,11 @@ async def deleting_data_async():
     # Return the array of indices for inactive links
     return unactive_link_indices
 
-
 def delete_links_from_db(indices_to_remove):
     df = pd.read_csv('nieruchomosci.csv')
 
-    # Convert 1-indexed indices to 0-indexed
-    indices_to_remove_0indexed = [index - 1 for index in indices_to_remove]
-
-    # Filter DataFrame and drop rows with inactive links
-    filtered_df = df.drop(indices_to_remove_0indexed)
+    # Filter out the rows with indices that meet the condition (e.g., 404 response code)
+    filtered_df = df.drop(indices_to_remove, axis=0)
 
     # Save the filtered DataFrame back to the CSV file
     filtered_df.to_csv('nieruchomosci.csv', index=False)
-
